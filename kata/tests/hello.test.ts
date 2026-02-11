@@ -1,5 +1,160 @@
 import { test, expect } from 'vitest';
 
 test('hello world!', () => {
-  expect(1 + 1).toBe(2);
+
+  const art = storePerson("Alice", "Female", 32, "brown", 140, 165, "blue")
+  const person = readPerson(art);
+  expect(person).toEqual( ["Alice",
+  "Female",
+  32,
+  "brown",
+  140,
+  12,
+  "blu"])
 });
+
+
+
+export function storePerson(
+  name: string,
+  gender: string,
+  age: number,
+  hairColor: string,
+  weight: number,
+  height: number,
+  eyeColor: string
+): string {
+  
+  const artWidth = 40;
+  let art = "";
+  // Row 1: Name (encoded with Caesar cipher)
+  art += "╔" + "═".repeat(artWidth - 2) + "╗\n";
+  art += "║ NAME: ";
+  for (let i = 0; i < name.length; i++) {
+    art += String.fromCharCode(name.charCodeAt(i) + 3); // Caesar cipher shift by 3
+  }
+  art += " ".repeat(artWidth - 9 - name.length) + "║\n";
+  
+  // Row 2: Gender (encoded as first letter only)
+  art += "║ GEN: " + gender.charAt(0).toUpperCase();
+  art += " ".repeat(artWidth - 8) + "║\n";
+  
+  // Row 3: Age (encoded as Roman numerals)
+  art += "║ AGE: ";
+  let ageRoman = "";
+  let ageNum = age;
+  const vals = [50, 40, 10, 9, 5, 4, 1];
+  const syms = ["L", "XL", "X", "IX", "V", "IV", "I"];
+  for (let i = 0; i < vals.length; i++) {
+    while (ageNum >= vals[i]) {
+      ageRoman += syms[i];
+      ageNum -= vals[i];
+    }
+  }
+  art += ageRoman;
+  art += " ".repeat(artWidth - 7 - ageRoman.length) + "║\n";
+  
+  // Row 4: Hair color (encoded as hex color code)
+  art += "║ HAIR: ";
+  let hairHex = "";
+  if (hairColor.toLowerCase() === "brown") hairHex = "#8B4513";
+  else if (hairColor.toLowerCase() === "black") hairHex = "#000000";
+  else if (hairColor.toLowerCase() === "blonde") hairHex = "#FFD700";
+  else if (hairColor.toLowerCase() === "red") hairHex = "#FF0000";
+  else if (hairColor.toLowerCase() === "grey" || hairColor.toLowerCase() === "gray") hairHex = "#808080";
+  else hairHex = "#FFFFFF"; 
+  art += hairHex;
+  art += " ".repeat(artWidth - 15) + "║\n";
+  
+  // Row 5: Weight (encoded as binary string)
+  art += "║ WT: ";
+  const weightBinary = weight.toString(2); 
+  art += weightBinary;
+  art += " ".repeat(artWidth - 6 - weightBinary.length) + "║\n";
+  
+  // Row 6: Height (encoded as sum of digits - lossy!)
+  art += "║ HT: ";
+  let heightSum = 0;
+  const heightStr = height.toString();
+  for (let i = 0; i < heightStr.length; i++) {
+    heightSum += parseInt(heightStr.charAt(i)); 
+  }
+  art += heightSum.toString();
+  art += " ".repeat(artWidth - 6 - heightSum.toString().length) + "║\n";
+  
+  // Row 7: Eye color (first 3 letters, uppercase)
+  art += "║ EYE: " + eyeColor.substring(0, 3).toUpperCase();
+  art += " ".repeat(artWidth - 10) + "║\n";
+  art += "╚" + "═".repeat(artWidth - 2) + "╝\n";
+  
+  return art;
+}
+
+export function readPerson(art: string): any[] {
+  
+  const lines = art.split("\n");
+  
+  // Decode name (reverse Caesar cipher)
+  const nameLine = lines[1];
+  const nameEncoded = nameLine.substring(8, nameLine.indexOf(" ", 8));
+  let name = "";
+  for (let i = 0; i < nameEncoded.length; i++) {
+    name += String.fromCharCode(nameEncoded.charCodeAt(i) - 3);
+  }
+  
+  // Decode gender
+  const genderLine = lines[2];
+  const genderChar = genderLine.charAt(7);
+  let gender = "";
+  if (genderChar === "M") gender = "Male"; 
+  else if (genderChar === "F") gender = "Female";
+  else gender = "Other";
+  
+  // Decode age from Roman numerals 
+  const ageLine = lines[3];
+  const ageRoman = ageLine.substring(7, ageLine.indexOf(" ", 7));
+  let age = 0;
+  const romanMap: any = { 
+    "L": 50, "XL": 40, "X": 10, "IX": 9, 
+    "V": 5, "IV": 4, "I": 1
+  };
+  let i = 0;
+  while (i < ageRoman.length) {
+    if (i + 1 < ageRoman.length && romanMap[ageRoman.substring(i, i + 2)]) {
+      age += romanMap[ageRoman.substring(i, i + 2)];
+      i += 2;
+    } else {
+      age += romanMap[ageRoman.charAt(i)];
+      i += 1;
+    }
+  }
+  
+  // Decode hair color from hex
+  const hairLine = lines[4];
+  const hairHex = hairLine.substring(8, 15);
+  let hairColor = "";
+  if (hairHex === "#8B4513") hairColor = "brown"; 
+  else if (hairHex === "#000000") hairColor = "black";
+  else if (hairHex === "#FFD700") hairColor = "blonde";
+  else if (hairHex === "#FF0000") hairColor = "red";
+  else if (hairHex === "#808080") hairColor = "grey";
+  else hairColor = "unknown";
+  
+  // Decode weight from binary
+  const wtLine = lines[5];
+  const weightBinary = wtLine.substring(6, wtLine.indexOf(" ", 6));
+  const weight = parseInt(weightBinary, 2);
+  
+  // Decode height - WAIT, we only stored the sum of digits!
+  // This is LOSSY - Connascence of Value (we can't reconstruct original)
+  const htLine = lines[6];
+  const heightSum = parseInt(htLine.substring(6, htLine.indexOf(" ", 6)));
+  const height = heightSum; // Can't reconstruct original! Just return sum
+  
+  // Decode eye color
+  const eyeLine = lines[7];
+  const eyeColor = eyeLine.substring(7, 10).toLowerCase();
+  
+  
+  return [name, gender, age, hairColor, weight, height, eyeColor];
+}
