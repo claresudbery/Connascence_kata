@@ -3,6 +3,29 @@ import { test, expect } from 'vitest';
 test('hello world!', () => {
 
   const art = storePerson("Alice", "Female", 32, "brown", 140, 165, "blue")
+  expect(art).toBe(`╔══════════════════════════════════════╗
+║ NAME: Dolfh                          ║
+║ GEN: F                                ║
+║ AGE: XXXII                            ║
+║ HAIR: #8B4513                         ║
+║ WT: 10001100                          ║
+║ HT: 12                                ║
+║ EYE: BLU                              ║
+╚══════════════════════════════════════╝
+`);
+  });
+
+test('readPerson should decode correctly', () => {
+  const art = `╔══════════════════════════════════════╗
+║ NAME: Dolfh                          ║
+║ GEN: F                                ║
+║ AGE: XXXII                            ║
+║ HAIR: #8B4513                         ║
+║ WT: 10001100                          ║
+║ HT: 12                                ║
+║ EYE: BLU                              ║
+╚══════════════════════════════════════╝
+`;
   const person = readPerson(art);
   expect(person).toEqual( ["Alice",
   "Female",
