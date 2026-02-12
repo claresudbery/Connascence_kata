@@ -50,7 +50,7 @@ test('readPerson should decode correctly', () => {
 });
 
 test('convertNumberToRomanNumeral works for 63', () => {
-  expect(convertNumberToRomanNumeral(63)).toEqual("LXIII");
+  expect(convertNumberToRomanNumeral(63)).toEqual("LXIII"); // "Looksee"
 });
 
 export function storePerson(description: {
@@ -65,18 +65,13 @@ export function storePerson(description: {
   
   const artWidth = 40;
   let art = "";
+
   art = encodeNameWithCaesarCipher(art, artWidth, description.name);
-  
   art = encodeGenderAsFirstLetter(art, description.gender, artWidth);
-  
   art = encodeAgeAsRomanNumeral(art, description.age, artWidth);
-  
   art = encodeHairColorAsHex(art, description.hairColor, artWidth);
-  
   art = encodeWeightAsBinaryString(art, description.weight, artWidth);
-  
   art = encodeHeightAsLossySumDigits(art, description.height, artWidth);
-  
   art = encodeEyeColorAsFirst3UpperCaseLetters(art, description.eyeColor, artWidth);
   
   return art;
@@ -166,17 +161,11 @@ export function readPerson(art: string) {
   const lines = art.split("\n");
   
   let name = decodeNameFromCaesarCipher(lines);
-  
   let gender = decodeGenderFromFirstLetter(lines);
-  
   let age = decodeAgeFromRomanNumerals(lines);
-  
   let hairColor = decodeHairColorFromHex(lines);
- 
   const weight = decodeWeightFromBinary(lines);
-  
   const height = decodeLossyHeightFromSumOfDigits(lines); 
-  
   const eyeColor = decodeEyeColorFromHex(lines);
   
   return {name, gender, age, hairColor, weight, height, eyeColor};
