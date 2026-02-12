@@ -50,7 +50,7 @@ test('readPerson should decode correctly', () => {
 });
 
 test('convertNumberToRomanNumeral works for 63', () => {
-  expect(convertNumberToRomanNumeral(63)).toEqual("LXIII"); // "Looksee"
+  expect(RomanNumeral.encodeNumberAsRomanNumeral(63)).toEqual("LXIII"); 
 });
 
 export function storePerson(description: {
@@ -120,24 +120,10 @@ function encodeHairColorAsHex(art: string, hairColor: string, artWidth: number) 
 
 function encodeAgeAsRomanNumeral(art: string, age: number, artWidth: number) {
   art += "║ AGE: ";
-  let ageRoman = convertNumberToRomanNumeral(age);
+  let ageRoman = RomanNumeral.encodeNumberAsRomanNumeral(age);
   art += ageRoman;
   art += " ".repeat(artWidth - 7 - ageRoman.length) + "║\n";
   return art;
-}
-
-function convertNumberToRomanNumeral(age: number) {
-  let ageRoman = "";
-  let ageNum = age;
-  const vals = [50, 40, 10, 9, 5, 4, 1];
-  const syms = ["L", "XL", "X", "IX", "V", "IV", "I"];
-  for (let i = 0; i < vals.length; i++) {
-    while (ageNum >= vals[i]) {
-      ageRoman += syms[i];
-      ageNum -= vals[i];
-    }
-  }
-  return ageRoman;
 }
 
 function encodeGenderAsFirstLetter(art: string, gender: string, artWidth: number) {
@@ -243,5 +229,21 @@ function decodeNameFromCaesarCipher(lines: string[]) {
     name += String.fromCharCode(nameEncoded.charCodeAt(i) - 3);
   }
   return name;
+}
+
+class RomanNumeral {
+  public static encodeNumberAsRomanNumeral(input: number): string {
+    let romanOutput = "";
+    let processedInput = input;
+    const vals = [50, 40, 10, 9, 5, 4, 1];
+    const syms = ["L", "XL", "X", "IX", "V", "IV", "I"];
+    for (let i = 0; i < vals.length; i++) {
+      while (processedInput >= vals[i]) {
+        romanOutput += syms[i];
+        processedInput -= vals[i];
+      }
+    }
+    return romanOutput;
+  }
 }
 
