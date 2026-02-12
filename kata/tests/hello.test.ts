@@ -50,19 +50,65 @@ export function storePerson(
   
   const artWidth = 40;
   let art = "";
-  // Row 1: Name (encoded with Caesar cipher)
-  art += "╔" + "═".repeat(artWidth - 2) + "╗\n";
-  art += "║ NAME: ";
-  for (let i = 0; i < name.length; i++) {
-    art += String.fromCharCode(name.charCodeAt(i) + 3); // Caesar cipher shift by 3
+  art = encodeNameWithCaesarCipher(art, artWidth, name);
+  
+  art = encodeGenderAsFirstLetter(art, gender, artWidth);
+  
+  art = encodeAgeAsRomanNumeral(art, age, artWidth);
+  
+  art = encodeHairColorAsHex(art, hairColor, artWidth);
+  
+  art = encodeWeightAsBinaryString(art, weight, artWidth);
+  
+  art = encodeHeightAsLossySumDigits(art, height, artWidth);
+  
+  art = encodeEyeColorAsFirst3UpperCaseLetters(art, eyeColor, artWidth);
+  
+  return art;
+}
+
+function encodeEyeColorAsFirst3UpperCaseLetters(art: string, eyeColor: string, artWidth: number) {
+  art += "║ EYE: " + eyeColor.substring(0, 3).toUpperCase();
+  art += " ".repeat(artWidth - 10) + "║\n";
+  art += "╚" + "═".repeat(artWidth - 2) + "╝\n";
+  return art;
+}
+
+function encodeHeightAsLossySumDigits(art: string, height: number, artWidth: number) {
+  art += "║ HT: ";
+  let heightSum = 0;
+  const heightStr = height.toString();
+  for (let i = 0; i < heightStr.length; i++) {
+    heightSum += parseInt(heightStr.charAt(i));
   }
-  art += " ".repeat(artWidth - 9 - name.length) + "║\n";
-  
-  // Row 2: Gender (encoded as first letter only)
-  art += "║ GEN: " + gender.charAt(0).toUpperCase();
-  art += " ".repeat(artWidth - 8) + "║\n";
-  
-  // Row 3: Age (encoded as Roman numerals)
+  art += heightSum.toString();
+  art += " ".repeat(artWidth - 6 - heightSum.toString().length) + "║\n";
+  return art;
+}
+
+function encodeWeightAsBinaryString(art: string, weight: number, artWidth: number) {
+  art += "║ WT: ";
+  const weightBinary = weight.toString(2);
+  art += weightBinary;
+  art += " ".repeat(artWidth - 6 - weightBinary.length) + "║\n";
+  return art;
+}
+
+function encodeHairColorAsHex(art: string, hairColor: string, artWidth: number) {
+  art += "║ HAIR: ";
+  let hairHex = "";
+  if (hairColor.toLowerCase() === "brown") hairHex = "#8B4513";
+  else if (hairColor.toLowerCase() === "black") hairHex = "#000000";
+  else if (hairColor.toLowerCase() === "blonde") hairHex = "#FFD700";
+  else if (hairColor.toLowerCase() === "red") hairHex = "#FF0000";
+  else if (hairColor.toLowerCase() === "grey" || hairColor.toLowerCase() === "gray") hairHex = "#808080";
+  else hairHex = "#FFFFFF";
+  art += hairHex;
+  art += " ".repeat(artWidth - 15) + "║\n";
+  return art;
+}
+
+function encodeAgeAsRomanNumeral(art: string, age: number, artWidth: number) {
   art += "║ AGE: ";
   let ageRoman = "";
   let ageNum = age;
@@ -76,40 +122,22 @@ export function storePerson(
   }
   art += ageRoman;
   art += " ".repeat(artWidth - 7 - ageRoman.length) + "║\n";
-  
-  // Row 4: Hair color (encoded as hex color code)
-  art += "║ HAIR: ";
-  let hairHex = "";
-  if (hairColor.toLowerCase() === "brown") hairHex = "#8B4513";
-  else if (hairColor.toLowerCase() === "black") hairHex = "#000000";
-  else if (hairColor.toLowerCase() === "blonde") hairHex = "#FFD700";
-  else if (hairColor.toLowerCase() === "red") hairHex = "#FF0000";
-  else if (hairColor.toLowerCase() === "grey" || hairColor.toLowerCase() === "gray") hairHex = "#808080";
-  else hairHex = "#FFFFFF"; 
-  art += hairHex;
-  art += " ".repeat(artWidth - 15) + "║\n";
-  
-  // Row 5: Weight (encoded as binary string)
-  art += "║ WT: ";
-  const weightBinary = weight.toString(2); 
-  art += weightBinary;
-  art += " ".repeat(artWidth - 6 - weightBinary.length) + "║\n";
-  
-  // Row 6: Height (encoded as sum of digits - lossy!)
-  art += "║ HT: ";
-  let heightSum = 0;
-  const heightStr = height.toString();
-  for (let i = 0; i < heightStr.length; i++) {
-    heightSum += parseInt(heightStr.charAt(i)); 
+  return art;
+}
+
+function encodeGenderAsFirstLetter(art: string, gender: string, artWidth: number) {
+  art += "║ GEN: " + gender.charAt(0).toUpperCase();
+  art += " ".repeat(artWidth - 8) + "║\n";
+  return art;
+}
+
+function encodeNameWithCaesarCipher(art: string, artWidth: number, name: string) {
+  art += "╔" + "═".repeat(artWidth - 2) + "╗\n";
+  art += "║ NAME: ";
+  for (let i = 0; i < name.length; i++) {
+    art += String.fromCharCode(name.charCodeAt(i) + 3); // Caesar cipher shift by 3
   }
-  art += heightSum.toString();
-  art += " ".repeat(artWidth - 6 - heightSum.toString().length) + "║\n";
-  
-  // Row 7: Eye color (first 3 letters, uppercase)
-  art += "║ EYE: " + eyeColor.substring(0, 3).toUpperCase();
-  art += " ".repeat(artWidth - 10) + "║\n";
-  art += "╚" + "═".repeat(artWidth - 2) + "╝\n";
-  
+  art += " ".repeat(artWidth - 9 - name.length) + "║\n";
   return art;
 }
 
