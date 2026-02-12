@@ -2,7 +2,6 @@ import { test, expect } from 'vitest';
 
 test('hello world!', () => {
 
-  //const art = storePerson("Alice", "Female", 32, "brown", 140, 165, "blue")
   const art = storePerson(
   {
     name: "Alice",
@@ -13,6 +12,7 @@ test('hello world!', () => {
     height: 165,
     eyeColor: "blue"
   });
+
   expect(art).toBe(`╔══════════════════════════════════════╗
 ║ NAME: Dolfh                          ║
 ║ GEN: F                                ║
@@ -37,14 +37,6 @@ test('readPerson should decode correctly', () => {
 ╚══════════════════════════════════════╝
 `;
   const person = readPerson(art);
-
-  // expect(person).toEqual( ["Alice",
-  // "Female",
-  // 32,
-  // "brown",
-  // 140,
-  // 12,
-  // "blu"])
 
   expect(person).toEqual({
     name: "Alice",
@@ -187,7 +179,6 @@ export function readPerson(art: string) {
   
   const eyeColor = decodeEyeColorFromHex(lines);
   
-  // return [name, gender, age, hairColor, weight, height, eyeColor];
   return {name, gender, age, hairColor, weight, height, eyeColor};
 }
 function decodeEyeColorFromHex(lines: string[]) {
